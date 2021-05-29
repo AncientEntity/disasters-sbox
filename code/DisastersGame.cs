@@ -1,5 +1,6 @@
 ﻿
 using Sandbox;
+using Sandbox.UI;
 using System;
 using System.Collections.Generic;
 
@@ -24,13 +25,13 @@ namespace Disasters
 	{
 		public static DisastersGame game = null;
 		public static Random random = new Random();
+		private static List<Entity> eventEntities = new List<Entity>();
 
 		//Game settings
 		[Net]
 		public int maxRounds { get; set; }
-		public float waitingTime = 1f;
-		public float roundDuration = 10f;
-		public float waitingDuration = 10f;
+		public float roundDuration = 60f;
+		public float waitingDuration = 5f;
 		public List<Disaster> disasters = new List<Disaster>();
 
 		//Current Game Data
@@ -38,8 +39,10 @@ namespace Disasters
 		public gameStates currentState { get; set; }
 		[Net]
 		public int roundNumber { get; set; }
-		[Net,Predicted]
-		public float timeLeft { get; set; }
+		//[Net]
+		//public float timeLeft { get; set; }
+		[Net]
+		TimeSince timeLeft { get; set; }
 		[Net]
 		public int currentDisasterIndex { get; set; }
 		public Disaster currentDisaster { get { return disasters[currentDisasterIndex]; } }
@@ -62,7 +65,7 @@ namespace Disasters
 					maxRounds = 10;
 				}
 				currentState = gameStates.waiting;
-				timeLeft = waitingTime;
+				timeLeft = 0;
 
 				// Create a HUD entity. This entity is globally networked
 				// and when it is created clientside it creates the actual
@@ -88,7 +91,10 @@ namespace Disasters
 			var player = new DisasterPlayer();
 			client.Pawn = player;
 
-			player.Respawn();
+			if ( currentState == gameStates.waiting )
+			{
+				player.Respawn();
+			}
 		}
 
 		public enum roundStates
@@ -109,27 +115,38 @@ namespace Disasters
 		void RoundManagement()
 		{
 			//Round must be happening
-			if ( timeLeft <= 0 )
+			if ( GetTimeLeft() <= 0 )
 			{
 				//Start a new round and exit waiting mode.
 				if ( currentState == gameStates.waiting )
 				{
-					timeLeft = roundDuration;
+					timeLeft = 0;
 					roundNumber++;
 					currentDisasterIndex = random.Next( 0, disasters.Count );
+					currentDisaster.StartDisaster();
 					Log.Info( "Starting next round: " + currentDisaster.name + "|" + currentDisaster.desc );
 					currentState = gameStates.playing;
 
 
 				} else if (currentState == gameStates.playing)
 				{
-					timeLeft = waitingDuration;
+					timeLeft = 0;
+					currentDisaster.EndDisaster();
 					currentState = gameStates.waiting;
+					foreach(Entity e in eventEntities)
+					{
+						if(e == null || !e.IsValid())
+						{
+							continue;
+						}
+						e.Delete();
+					}
+					eventEntities = new List<Entity>();
+
 				}
-			}
-			else
+			} else if (currentState == gameStates.playing)
 			{
-				timeLeft -= RealTime.Delta;
+				currentDisaster.eventEntity.WhileEvent();
 			}
 			
 		}
@@ -140,6 +157,22 @@ namespace Disasters
 			playing,
 		}
 
+		public float GetTimeLeft()
+		{
+			if ( currentState == gameStates.waiting )
+			{
+				return waitingDuration - timeLeft; 
+			} else if (currentState == gameStates.playing)
+			{
+				return roundDuration - timeLeft;
+			}
+			return 0;
+		}
+
+		public static void RegisterEventEntity(Entity ent)
+		{
+			eventEntities.Add( ent );
+		}
 
 	}
 

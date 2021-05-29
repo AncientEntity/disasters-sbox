@@ -12,6 +12,15 @@ namespace Disasters
 
 		bool dressed = false;
 
+		public void RemoveClothes()
+		{
+			pants.Delete();
+			jacket.Delete();
+			shoes.Delete();
+			hat.Delete();
+			dressed = false;
+		}
+
 		public void Dress()
 		{
 			if ( dressed )

@@ -58,7 +58,7 @@ namespace Disasters
 			}
 			public string RoundText { 
 				get {
-					return "Round:    "+DisastersGame.game.roundNumber + "/"+DisastersGame.game.maxRounds+"   Time Remaining: "+(int)DisastersGame.game.timeLeft; 
+					return "Round:    "+DisastersGame.game.roundNumber + "/"+DisastersGame.game.maxRounds+"   Time Remaining: "+(int)DisastersGame.game.GetTimeLeft(); 
 				}
 			}
 			public GameStats()
