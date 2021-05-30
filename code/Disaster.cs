@@ -44,7 +44,6 @@ namespace Disasters
 		{
 			if ( !IsServer )
 			{
-				disasters.Add( new Disaster( "Melon Hail", "It's raining watermelons!", null ) );
 				disasters.Add( new Disaster( "Errorpocolypse", "Avoid the errors or you'll become one!", null ) );
 			} else
 			{
