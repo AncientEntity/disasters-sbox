@@ -7,6 +7,7 @@ namespace Disasters
 	{
 		public bool enabled { get; set; }
 
+		public abstract void OnDisasterStart();
 		public abstract void WhileEvent();
 
 	}

@@ -17,6 +17,8 @@ namespace Disasters
 			lastSpawn = 0;
 		}
 
+		public override void OnDisasterStart() { }
+
 		public override void WhileEvent()
 		{
 			if (!enabled || !IsServer)
@@ -69,14 +71,14 @@ namespace Disasters
 				{
 					return;
 				}
-				bool debug_prop_explosion = true;
+				bool debug_prop_explosion = false;
 
 				//Go boom
 				Prop EE = new Prop();
 				EE.SetModel( "models/rust_props/barrels/fuel_barrel.vmdl_c" );
 				ModelExplosionBehavior explosionBehavior = EE.GetModel().GetExplosionBehavior();
 				EE.Delete();
-				Sound.FromWorld( explosionBehavior.Sound, PhysicsBody.MassCenter + new Vector3(0f,0f,9000f));
+				Sound.FromWorld( explosionBehavior.Sound, PhysicsBody.MassCenter + new Vector3(0f,0f,9200f));
 				Particles.Create( explosionBehavior.Effect, PhysicsBody.MassCenter );
 
 

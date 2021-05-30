@@ -1,4 +1,5 @@
-﻿using Sandbox.UI;
+﻿using Sandbox;
+using Sandbox.UI;
 
 //
 // You don't need to put things in a namespace, but it doesn't hurt.
@@ -20,9 +21,22 @@ namespace Disasters
 
 				RootPanel.AddChild<GameStats>();
 				RootPanel.AddChild<ChatBox>();
+				RootPanel.AddChild<Health>();
 			}
 		}
 
+		public class Health : Panel
+		{
+			public string HealthText
+			{
+				get { return "🩸 "+MathX.CeilToInt(Local.Pawn.Health); }
+			}
+
+			public Health()
+			{
+				SetTemplate( "/HealthHUD.html" );
+			}
+		}
 
 		public class GameStats : Panel
 		{

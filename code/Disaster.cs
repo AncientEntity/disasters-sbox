@@ -25,6 +25,7 @@ namespace Disasters
 				return;
 			}
 			eventEntity.enabled = true;
+			eventEntity.OnDisasterStart();
 		}
 
 		public void EndDisaster()
@@ -41,16 +42,25 @@ namespace Disasters
 	{
 		public void InitializeDisasters()
 		{
-			//disasters.Add(new Disaster("Errorpocolypse","Avoid the errors or you'll become one!",null));
-			//disasters.Add(new Disaster("Terrynado","Tornado but it's a bunch of Terries!",null));
 			if ( !IsServer )
 			{
 				disasters.Add( new Disaster( "Melon Hail", "It's raining watermelons!", null ) );
+				disasters.Add( new Disaster( "Errorpocolypse", "Avoid the errors or you'll become one!", null ) );
 			} else
 			{
-				disasters.Add( new Disaster( "Melon Hail", "It's raining watermelons!", new MelonHailEventEntity() ) );
-				
+				disasters.Add( new Disaster( "Errorpocolypse", "Avoid the errors or you'll become one!", new ErrorEventEntity() ) );
 			}
+			if ( !IsServer )
+			{
+				disasters.Add( new Disaster( "Melon Hail", "It's raining watermelons!", null ) );
+			}
+			else
+			{
+				disasters.Add( new Disaster( "Melon Hail", "It's raining watermelons!", new MelonHailEventEntity() ) );
+
+			}
+			//disasters.Add( new Disaster( "Terrynado", "Tornado but it's a bunch of Terries!", null ) );
+
 		}
 	}
 

@@ -174,6 +174,11 @@ namespace Disasters
 			eventEntities.Add( ent );
 		}
 
+		public void EndRound()
+		{
+			timeLeft = 99999;
+		}
+
 	}
 
 }
